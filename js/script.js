@@ -1,17 +1,22 @@
-$('#tab-contents .tab[id != "tab1"]').hide();
-//$('要素[属性]')⬆️スペースいる
-//hide特定のHTML要素を非表示にするメソッド
+const API_KEY = "277b21abd626e66778250f58943e9bac";
 
-$("#tab-menu a").on("click",function(event){
-  $("#tab-contents .tab").hide();//全コンテンツを非表示
-  //              ⬆️スペースいる
-  $("#tab-menu .active").removeClass("active");
-  //          ⬆️スペースいる
-  //クラス属性が設定されているHTML要素から、クラスを削除するメソッド
-  $(this).addClass("active");//thisクリックされた時
-  //任意のHTML要素にクラス属性を追加できるメソッド
-  $($(this).attr("href")).show();
-  //attr,HTML要素の属性を取得したり設定できるメソッド
-  //show,要素を表示するメソッド
-  event.preventDefault();
+$(function(){
+  $("#btn").on("click",function(){
+    $.ajax({
+      url: "http://api.openweathermap.org/data/2.5/weather?q=" + $("#cityname").val() + "&units=metric&appid=" + API_KEY,
+      //val()、HTMLのvalue属性を取得するメソッド
+      dataType: "jsonp",
+    }).done(function (data){//通信成功
+      $("#place").text(data.name);//$('#id名').text(JSONから欲しい値)
+      $("#temp_max").text(data.main.temp_max);
+      $("#temp_min").text(data.main.temp_min);
+      $("#humidity").text(data.main.humidity);
+      $("#speed").text(data.wind.speed);
+      $("#weather").text(data.weather[0].main);
+      $("img").attr("src","http://openweathermap.org/img/w/" + data.weather[0].icon + ".png");
+      $("img").attr("alt",data.weather[0].main);
+    }).fail(function (data){//通信失敗
+      alert("通信に失敗しました。");
+    });
+  });
 });
